@@ -38,9 +38,9 @@ local function admin_by_username(cb_extra, success, result)
 		print(user_id..' added to _config table')
 		save_config()
 	    if chat_type == 'chat' then
-	        send_msg('chat#id'..chat_id, '🆕 '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('chat#id'..chat_id, '$ '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    elseif chat_type == 'channel' then
-	        send_msg('channel#id'..chat_id, '🆕 '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('channel#id'..chat_id, '$ '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    end
 	end
 end
@@ -60,9 +60,9 @@ local function mod_by_username(cb_extra, success, result)
 	else
 	    redis:set(hash, true)
 	    if chat_type == 'chat' then
-	        send_msg('chat#id'..chat_id, '🆕 '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('chat#id'..chat_id, '$'..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    elseif chat_type == 'channel' then
-	        send_msg('channel#id'..chat_id, '🆕 '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('channel#id'..chat_id, '$ '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    end
 	end
 end
@@ -105,9 +105,9 @@ local function set_admin(cb_extra, success, result)
 		print(user_id..' added to _config table')
 		save_config()
 	    if cb_extra.chat_type == 'chat' then
-	        send_msg('chat#id'..chat_id, '🆕 '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('chat#id'..chat_id, '$'..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    elseif cb_extra.chat_type == 'channel' then
-	        send_msg('channel#id'..chat_id, '🆕 '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('channel#id'..chat_id, '$ '..lang_text(chat_id, 'newAdmin')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    end
 	end
 end
@@ -127,9 +127,9 @@ local function set_mod(cb_extra, success, result)
 	else
     	redis:set(hash, true)
 	    if cb_extra.chat_type == 'chat' then
-	        send_msg('chat#id'..chat_id, '🆕 '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('chat#id'..chat_id, '$ '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    elseif cb_extra.chat_type == 'channel' then
-	        send_msg('channel#id'..chat_id, '🆕 '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
+	        send_msg('channel#id'..chat_id, '$ '..lang_text(chat_id, 'newMod')..' @'..user_name..' ('..user_id..')', ok_cb, false)
 	    end
 	end
 end
@@ -224,9 +224,9 @@ end
 local function run(msg, matches)
 	user_id = msg.from.id
 	chat_id = msg.to.id
-	if matches[1] == 'rank' then
+	if matches[1] == 'set' then
 		if matches[2] == 'admin' then
-			if permissions(user_id, chat_id, "rank_admin") then
+			if permissions(user_id, chat_id, "set_admin") then
 				if msg.reply_id then
 					get_message(msg.reply_id, admin_by_reply, false)
 				end
@@ -242,11 +242,11 @@ local function run(msg, matches)
 	            	resolve_username(member, admin_by_username, {chat_id=chat_id, member=member, chat_type=chat_type})
 				end
 			else
-				return '🚫 '..lang_text(msg.to.id, 'require_sudo')
+				return '$ '..lang_text(msg.to.id, 'require_sudo')
 			end
 		end
-		if matches[2] == 'mod' then
-			if permissions(user_id, chat_id, "rank_mod") then
+		if matches[2] == 'add' then
+			if permissions(user_id, chat_id, "add_mod") then
 				if msg.reply_id then
 					get_message(msg.reply_id, mod_by_reply, false)
 				end
@@ -262,11 +262,11 @@ local function run(msg, matches)
 	            	resolve_username(member, mod_by_username, {chat_id=chat_id, member=member, chat_type=chat_type})
 				end
 			else
-				return '🚫 '..lang_text(msg.to.id, 'require_admin')
+				return '$ '..lang_text(msg.to.id, 'you're not admin')
 			end
 		end
-		if matches[2] == 'guest' then
-			if permissions(user_id, chat_id, "rank_guest") then
+		if matches[2] == 'remove' then
+			if permissions(user_id, chat_id, "reamove_mod") then
 				if msg.reply_id then
 					get_message(msg.reply_id, guest_by_reply, false)
 				end
@@ -282,23 +282,23 @@ local function run(msg, matches)
 	            	resolve_username(member, guest_by_username, {chat_id=chat_id, member=member, chat_type=chat_type})
 				end
 			else
-				return '🚫 '..lang_text(msg.to.id, 'require_sudo')
+				return '$ '..lang_text(msg.to.id, 'you're not admin')
 			end
 		end
 	elseif matches[1] == 'admins' then
 		if permissions(user_id, chat_id, "admins") then
 		  	-- Check users id in config
-		  	local text = '🔆 '..lang_text(msg.to.id, 'adminList')..':\n'
+		  	local text = '$ '..lang_text(msg.to.id, 'adminList')..':\n'
 		  	local compare = text
 		  	for v,user in pairs(_config.admin_users) do
-			    text = text..'🔅 '..user[2]..' ('..user[1]..')\n'
+			    text = text..'$ '..user[2]..' ('..user[1]..')\n'
 		  	end
 		  	if compare == text then
-		  		text = text..'🔅 '..lang_text(chat_id, 'adminEmpty')
+		  		text = text..'$ '..lang_text(chat_id, 'adminEmpty')
 		  	end
 		  	return text
 		else
-			return '🚫 '..lang_text(msg.to.id, 'require_mod')
+			return '$'..lang_text(msg.to.id, 'you're not admin')
 		end
 	elseif matches[1] == 'members' then
 		if permissions(user_id, chat_id, "members") then
@@ -311,7 +311,7 @@ local function run(msg, matches)
 			    channel_get_users(chan, members_channel, {chat_id=chat_id})
 			end
 		else
-			return '🚫 '..lang_text(msg.to.id, 'require_mod')
+			return '$ '..lang_text(msg.to.id, 'you're not admin')
 		end
 	elseif matches[1] == 'mods' then
 		if permissions(user_id, chat_id, "mods") then
@@ -324,7 +324,7 @@ local function run(msg, matches)
 			    channel_get_users(chan, mods_channel, {chat_id=chat_id})
 			end
 		else
-			return '🚫 '..lang_text(msg.to.id, 'require_mod')
+			return '$'..lang_text(msg.to.id, 'require_mod')
 		end
 	end
 end
@@ -333,8 +333,8 @@ end
 
 return {
   patterns = {
-  	"^#(rank) (.*) (.*)$",
-  	"^#(rank) (.*)$",
+  	"^#(set) (.*) (.*)$",
+  	"^#(set) (.*)$",
   	"^#(admins)$",
   	"^#(mods)$",
   	"^#(members)$"
