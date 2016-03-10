@@ -1,16 +1,3 @@
---------------------------------------------------
---      ____  ____ _____                        --
---     |    \|  _ )_   _|___ ____   __  __      --
---     | |_  )  _ \ | |/ ·__|  _ \_|  \/  |     --
---     |____/|____/ |_|\____/\_____|_/\/\_|     --
---                                              --
---------------------------------------------------
---                                              --
---       Developers: @Josepdal & @MaSkAoS       --
---     Support: @Skneos,  @iicc1 & @serx666     --
---                                              --
---------------------------------------------------
-
 do
 
 to_id = ""
@@ -183,7 +170,7 @@ local function run(msg, matches)
       return reload_plugins(true)
     end
   else
-    return '🚫 '..lang_text(msg.to.id, 'require_sudo')
+    return '#'..lang_text(msg.to.id, 'only emc sudo|admin')
   end
 end
 
